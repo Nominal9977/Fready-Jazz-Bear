@@ -13,7 +13,6 @@ public class StateBase : MonoBehaviour
     protected Dictionary<Type, State> States = new Dictionary<Type, State>();
 
     protected State currentState;
-    private int shit;
 
     public State this[Type type]
     {
@@ -168,13 +167,13 @@ public struct baseTransition
 }
 
 
-public interface sItemState
+public interface sDefaultState
 {
     void enter();
     void update();
     void exit();
 }
-public class State : sItemState
+public class State : sDefaultState
 {
     public virtual bool IsDefault => false;
     public HashSet<baseTransition> stateTrans { get; } = new HashSet<baseTransition>();
@@ -186,7 +185,7 @@ public class State : sItemState
         stateTrans.Add(new baseTransition(to, condition));
     }
 }
-public abstract class StateAuto<T, S> : State where T : StateAuto<T, S>, new()
+public abstract class StateAuto<T, S>: State where T : StateAuto<T, S>, new()
 {
     public static Type type => typeof(T);
 
@@ -200,40 +199,4 @@ public abstract class StateAuto<T, S> : State where T : StateAuto<T, S>, new()
         instance.script = _script;
         return instance;
     }
-}
-public class FuntionLibray : MonoBehaviour
-{
-    static public bool IsPointerOverThis(GameObject obj)
-    {
-        return IsPointerOverThis(Input.mousePosition, obj);
-    }
-    static public bool IsPointerOverThis(Vector2 screenPosition, GameObject obj)
-    {
-        PointerEventData pointerData = new PointerEventData(EventSystem.current);
-        pointerData.position = screenPosition;
-
-        List<RaycastResult> results = new List<RaycastResult>();
-        EventSystem.current.RaycastAll(pointerData, results);
-
-        foreach (var result in results)
-        {
-            if (result.gameObject == obj.gameObject)
-                return true;
-        }
-
-        return false;
-    }
-    static public bool PlayTransition(float MoveTimer, float MoveDuration, Vector3 StartingPos, Vector3 TargetPos, Transform ObjectTransfrom)
-    {
-        MoveTimer += Time.deltaTime;
-        float progress = Mathf.Clamp01(MoveTimer / MoveDuration);
-        ObjectTransfrom.localPosition = Vector3.Lerp(StartingPos, TargetPos, progress);
-
-        if (progress >= MoveDuration)
-        {
-            return false;
-        }
-        return false;
-    }
-
 }
