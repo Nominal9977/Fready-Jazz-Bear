@@ -1,6 +1,6 @@
 using UnityEditor;
 using UnityEngine;
-//using static ChannelNames;
+using static ChannelNames;
 
 
 public class PlayerMovScript : MonoBehaviour
@@ -37,7 +37,7 @@ public class PlayerMovScript : MonoBehaviour
     {
         stateMachine.update();
         health++;
-        EventManager.Player.OnHealthChanged.Get().Invoke(this, health);
+        EventManager.Player.OnHealthChanged.Get(Default).Invoke(this, health);
     }
 
     private void UpdateHealth(Component component, int health)

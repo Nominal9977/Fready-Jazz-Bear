@@ -1,4 +1,4 @@
-public enum ChannelNames
+public enum ChannelNames: int
 {
     Default = -1,
 }

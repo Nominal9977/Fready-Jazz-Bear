@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using static ChannelNames;
 
 public static class EventManager
 {
@@ -41,9 +42,9 @@ public static class EventManager
 
 public class GenericEvent<T> where T : class, new()
 {
-    private Dictionary<int, T> map = new Dictionary<int, T>();
+    private Dictionary<ChannelNames, T> map = new Dictionary<ChannelNames, T>();
 
-    public T this[int channel]
+    public T this[ChannelNames channel]
     {
         get
         {
@@ -51,7 +52,7 @@ public class GenericEvent<T> where T : class, new()
             return map[channel];
         }
     }
-    public T Get(int channel = -1)
+    public T Get(ChannelNames channel = default)
     {
         map.TryAdd(channel, new T());
         return map[channel];
