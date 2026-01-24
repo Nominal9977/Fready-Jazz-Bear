@@ -1,11 +1,17 @@
+using UnityEditor;
 using UnityEngine;
+//using static ChannelNames;
+
 
 public class PlayerMovScript : MonoBehaviour
 {
+
     [SerializeField] public float moveSpeed = 5f;
     [SerializeField] public GameObject player;
     [SerializeField] public GameObject Floor;
+    [SerializeField] public Vector3 BossLastKnownPostion;
     public Vector3 newPostion;
+    public int health = 0;
 
     public StateMachine stateMachine;
     void Start()
@@ -23,15 +29,22 @@ public class PlayerMovScript : MonoBehaviour
             return CheckInsideGround(newPostion);
         });
 
-
+        EventManager.Player.OnHealthChanged.Get().AddListener(UpdateHealth);
     }
 
     // Update is called once per frame
     void Update()
     {
         stateMachine.update();
-
+        health++;
+        EventManager.Player.OnHealthChanged.Get().Invoke(this, health);
     }
+
+    private void UpdateHealth(Component component, int health)
+    {
+        Debug.Log("EVENT SYSTEM RECIEVED HEATLH " + health.ToString());
+    }
+
 
 
     public bool CheckInsideGround(Vector3 NewPos)
@@ -41,6 +54,8 @@ public class PlayerMovScript : MonoBehaviour
 
         Vector3 center_to_player = NewPos - FloorCenterPos;
         if(center_to_player.magnitude > sphereWidth.z/2 - 1) return false; else return true;
+
+       
 
     }
 
