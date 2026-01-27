@@ -18,7 +18,6 @@ public class BeatCombo : MonoBehaviour
 
     [SerializeField] int[] comboMults;
     [SerializeField] int curMultIndex;
-    [SerializeField] int scoreMult;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -45,29 +44,35 @@ public class BeatCombo : MonoBehaviour
        
         if(Mathf.Abs(lastBeatTime - lastHitTime) <= hitInterval )
         {
-            Debug.Log(Mathf.Abs(lastBeatTime - lastHitTime));
-            Debug.Log(" HIT!! LBT: " + lastBeatTime + ", " + "LHT: " + lastHitTime);
+            //Debug.Log(Mathf.Abs(lastBeatTime - lastHitTime));
+            //Debug.Log(" HIT!! LBT: " + lastBeatTime + ", " + "LHT: " + lastHitTime);
 
-            curMultIndex++;
-            if(curMultIndex > comboMults.Count())
-            {
-                curMultIndex = comboMults.Count();
-                pScore.UpdateScore(pScore.attackHitScoreIncrease * comboMults[curMultIndex]);
-                return true;
-            }
-            //pScore.UpdateScore(pScore.attackHitScoreIncrease * comboMults[curMultIndex]);
+            IncreaseCombo();
+            pScore.UpdateScore((int)(pScore.attackHitScoreIncrease * comboMults[curMultIndex]));
             return true;
         }
 
-        curMultIndex = 0;
+        ResetCombo();
         return false;
+    }
+
+    void ResetCombo()
+    {
+        curMultIndex = 0;
+    }
+
+    void IncreaseCombo()
+    {
+        curMultIndex++;
+        if (curMultIndex >= comboMults.Count())
+            curMultIndex = comboMults.Count();
     }
 
     IEnumerator ComboDecayTimer()
     {
         yield return new WaitForSeconds(comboDecayTime);
-        if(shouldScoreDecay)
-        curMultIndex = 0;
+        if (shouldScoreDecay)
+            ResetCombo();
     }
 
     //Change this to use FMOD's system

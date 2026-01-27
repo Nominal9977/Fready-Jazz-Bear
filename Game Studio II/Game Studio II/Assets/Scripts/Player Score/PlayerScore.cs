@@ -6,6 +6,8 @@ using UnityEngine;
 using static ChannelNames;
 public class PlayerScore : MonoBehaviour
 {
+    [SerializeField] BeatCombo bCombo; //for prototyping
+
     [SerializeField] int score;
     [SerializeField] int totalScore;
 
@@ -43,7 +45,7 @@ public class PlayerScore : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space)) //Change this with when player hits boss
         {
-            UpdateScore(attackHitScoreIncrease);
+            //UpdateScore(attackHitScoreIncrease);
         }
 
         time -= Time.deltaTime;
@@ -57,6 +59,7 @@ public class PlayerScore : MonoBehaviour
 
     public void UpdateScore(int theScore)
     {
+        Debug.Log("adding " + theScore + " to score");
         score += theScore;
         scoreTF.text = score.ToString();
         
@@ -95,14 +98,37 @@ public class PlayerScore : MonoBehaviour
 
             return true;
         }
-        Debug.Log("restart");
+        Debug.Log("restart phase"); //Make this an event lol
         score = 0;
         scoreTF.text = score.ToString();
 
-        //Restart fight
+        //Restart fight (event)
         curThresholdIndex = 0;
         time = thresholds[0].thresholdTime;
         return false;
+    }
+
+    void ProgressThreshold()
+    {
+        curThresholdIndex++;
+        if(curThresholdIndex >= thresholds.Count())
+        {
+            curThresholdIndex = thresholds.Count() - 1;
+        }
+    }
+
+    void RefreshThreshold()
+    {
+        score = 0;
+        scoreTF.text = score.ToString();
+        time = thresholds[curThresholdIndex].thresholdTime;
+        timerTF.text = thresholds[curThresholdIndex].thresholdTime.ToString("00:00");
+    }
+
+    void ResetThreshold()
+    {
+        score = 0;;
+        curThresholdIndex = 0;
     }
 
     IEnumerator PlaceHolderTimer(float time)

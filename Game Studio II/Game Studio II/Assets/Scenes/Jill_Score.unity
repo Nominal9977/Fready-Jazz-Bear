@@ -940,7 +940,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b86711cd2a93c5145a2603bba63d4165, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pScore: {fileID: 0}
+  pScore: {fileID: 1203822789}
   testBPM: 120
   lastBeatTime: 0
   lastHitTime: 0
