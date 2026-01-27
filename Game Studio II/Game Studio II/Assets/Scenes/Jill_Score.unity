@@ -759,6 +759,7 @@ GameObject:
   - component: {fileID: 1203822783}
   - component: {fileID: 1203822788}
   - component: {fileID: 1203822789}
+  - component: {fileID: 1203822790}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -927,6 +928,27 @@ MonoBehaviour:
   scoreTF: {fileID: 2074349444}
   totalTF: {fileID: 119067348}
   timerTF: {fileID: 1554055841}
+--- !u!114 &1203822790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1203822782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b86711cd2a93c5145a2603bba63d4165, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pScore: {fileID: 0}
+  testBPM: 120
+  lastBeatTime: 0
+  lastHitTime: 0
+  hitInterval: 5
+  comboDecayTime: 3
+  comboMults: 0100000002000000040000000800000010000000
+  curMultIndex: 0
+  scoreMult: 0
 --- !u!1 &1225954595
 GameObject:
   m_ObjectHideFlags: 0

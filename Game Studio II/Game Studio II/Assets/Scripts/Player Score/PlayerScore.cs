@@ -9,7 +9,7 @@ public class PlayerScore : MonoBehaviour
     [SerializeField] int score;
     [SerializeField] int totalScore;
 
-    [SerializeField] int attackHitScoreIncrease;
+    [SerializeField] public int attackHitScoreIncrease;
     [SerializeField] int playerHitScoreDecrease;
 
     [SerializeField] Threshold[] thresholds;
@@ -26,8 +26,6 @@ public class PlayerScore : MonoBehaviour
         public int scoreNeeded;
         public float thresholdTime;
     }
-
-
   
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -43,7 +41,7 @@ public class PlayerScore : MonoBehaviour
     {
         //EventManager.Player.OnScoreChanged.Get(Default).Invoke(this, score);
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space)) //Change this with when player hits boss
         {
             UpdateScore(attackHitScoreIncrease);
         }
@@ -87,7 +85,7 @@ public class PlayerScore : MonoBehaviour
             curThresholdIndex++;
             if (curThresholdIndex >= thresholds.Count())
             {
-                Debug.Log("Ending FIght" + curThresholdIndex);
+                Debug.Log("Ending Fight" + curThresholdIndex);
                 curThresholdIndex = 0;
                 time = thresholds[0].thresholdTime;
                 return false;
