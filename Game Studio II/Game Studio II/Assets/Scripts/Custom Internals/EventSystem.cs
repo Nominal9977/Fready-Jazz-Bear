@@ -52,7 +52,7 @@ public class GenericEvent<T> where T : class, new()
             return map[channel];
         }
     }
-    public T Get(ChannelNames channel = default)
+    public T Get(ChannelNames channel = Default)
     {
         map.TryAdd(channel, new T());
         return map[channel];
