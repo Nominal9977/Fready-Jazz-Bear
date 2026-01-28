@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Linq;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -17,7 +18,9 @@ public class BeatCombo : MonoBehaviour
     bool shouldScoreDecay = true;
 
     [SerializeField] int[] comboMults;
-    [SerializeField] int curMultIndex;
+    [SerializeField] int curMultIndex = 0;
+
+    [SerializeField] TextMeshProUGUI comboTF;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -29,47 +32,54 @@ public class BeatCombo : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.Space))
         {
-            lastHitTime = Time.time;
+  
             if (CheckBeat())
             {
                 shouldScoreDecay = false;
+                StartCoroutine(ComboDecayTimer());
             }
-
-            StartCoroutine(ComboDecayTimer());
+            
         }
     }
 
     bool CheckBeat()
     {
-       
-        if(Mathf.Abs(lastBeatTime - lastHitTime) <= hitInterval )
+        lastHitTime = Time.time;
+        if (Mathf.Abs(lastBeatTime - lastHitTime) <= hitInterval )
         {
             //Debug.Log(Mathf.Abs(lastBeatTime - lastHitTime));
             //Debug.Log(" HIT!! LBT: " + lastBeatTime + ", " + "LHT: " + lastHitTime);
 
             IncreaseCombo();
+            //Debug.Log(curMultIndex);
             pScore.UpdateScore((int)(pScore.attackHitScoreIncrease * comboMults[curMultIndex]));
-            return true;
+            return true; //ONBEAT
         }
 
         ResetCombo();
-        return false;
+        return false; //OFFBEAT
     }
 
     void ResetCombo()
     {
         curMultIndex = 0;
+        comboTF.text = "x" + comboMults[curMultIndex].ToString();
+        Debug.Log("resetting combo");
     }
 
     void IncreaseCombo()
     {
         curMultIndex++;
         if (curMultIndex >= comboMults.Count())
-            curMultIndex = comboMults.Count();
+        {
+            curMultIndex = comboMults.Count() - 1;
+        }
+        comboTF.text = "x" + comboMults[curMultIndex].ToString();
     }
 
     IEnumerator ComboDecayTimer()
     {
+        Debug.Log("Starting Decay Timer");
         yield return new WaitForSeconds(comboDecayTime);
         if (shouldScoreDecay)
             ResetCombo();

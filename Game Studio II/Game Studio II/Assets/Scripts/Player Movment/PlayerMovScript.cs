@@ -42,7 +42,7 @@ public class PlayerMovScript : MonoBehaviour
 
     private void UpdateHealth(Component component, int health)
     {
-        Debug.Log("EVENT SYSTEM RECIEVED HEATLH " + health.ToString());
+        //Debug.Log("EVENT SYSTEM RECIEVED HEATLH " + health.ToString());
     }
 
 
