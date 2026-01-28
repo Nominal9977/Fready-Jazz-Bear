@@ -79,10 +79,14 @@ public class BeatCombo : MonoBehaviour
 
     IEnumerator ComboDecayTimer()
     {
+        shouldScoreDecay = true;
         Debug.Log("Starting Decay Timer");
         yield return new WaitForSeconds(comboDecayTime);
         if (shouldScoreDecay)
+        {
+            Debug.Log("combo decayed");
             ResetCombo();
+        }
     }
 
     //Change this to use FMOD's system

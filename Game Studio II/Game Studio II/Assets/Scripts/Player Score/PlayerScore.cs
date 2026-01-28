@@ -17,6 +17,8 @@ public class PlayerScore : MonoBehaviour
     [SerializeField] Threshold[] thresholds;
     int curThresholdIndex = 0;
 
+    [SerializeField] float scoreMaintainTime;
+
     [SerializeField] TextMeshProUGUI scoreTF; //I know this is bad lol this is for testing
     [SerializeField] TextMeshProUGUI totalTF;
     [SerializeField] TextMeshProUGUI timerTF;
@@ -83,18 +85,10 @@ public class PlayerScore : MonoBehaviour
             score = 0;
             scoreTF.text = score.ToString();
 
-            
 
-            curThresholdIndex++;
-            if (curThresholdIndex >= thresholds.Count())
-            {
-                Debug.Log("Ending Fight" + curThresholdIndex);
-                curThresholdIndex = 0;
-                time = thresholds[0].thresholdTime;
-                return false;
-            }
-            time = thresholds[curThresholdIndex].thresholdTime;
-            timerTF.text = thresholds[curThresholdIndex].thresholdTime.ToString("00:00");
+
+            ProgressThreshold();
+            RefreshThreshold();
 
             return true;
         }
@@ -129,6 +123,14 @@ public class PlayerScore : MonoBehaviour
     {
         score = 0;;
         curThresholdIndex = 0;
+        
+    }
+
+    IEnumerator ScoreMaintainTimer()
+    {
+        yield return new WaitForSeconds(scoreMaintainTime);
+        Debug.Log("Progress to new phase");
+        
     }
 
     IEnumerator PlaceHolderTimer(float time)

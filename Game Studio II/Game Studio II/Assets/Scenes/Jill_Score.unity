@@ -1119,7 +1119,7 @@ MonoBehaviour:
   testBPM: 120
   lastBeatTime: 0
   lastHitTime: 0
-  hitInterval: 0.25
+  hitInterval: 0.4
   comboDecayTime: 3
   comboMults: 0100000002000000040000000800000010000000
   curMultIndex: 0
