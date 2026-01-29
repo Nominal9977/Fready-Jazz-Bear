@@ -6,51 +6,54 @@ using static ChannelNames;
 public class PlayerMovScript : MonoBehaviour
 {
 
-    [SerializeField] public float moveSpeed = 5f;
-    [SerializeField] public GameObject player;
-    [SerializeField] public GameObject Floor;
-    [SerializeField] public Vector3 BossLastKnownPostion;
-    public Vector3 newPostion;
-    public int health = 0;
+    [SerializeField] public float mMoveSpeed = 5f;
+    [SerializeField] public GameObject mPlayer;
+    [SerializeField] public GameObject mFloor;
+    [SerializeField] public Vector3 mBossLastKnownPostion;
+    public Vector3 mNewPostion;
+    public int mHealth = 0;
 
-    public StateMachine stateMachine;
+    public StateMachine mStateMachine;
+
+    // Start is called before the first frame update
     void Start()
     {
-        player = this.gameObject;
-        stateMachine = stateMachine.StartStateWithAuto(this);
+        mPlayer = this.gameObject;
+        mStateMachine = mStateMachine.StartStateWithAuto(this);
 
-        stateMachine[sCanMove.type].addTrans(sCantMove.type, () => 
+        mStateMachine[sCanMove.mtype].addTrans(sCantMove.mtype, () => 
         { 
-            return !CheckInsideGround(newPostion);
+            return !CheckInsideGround(mNewPostion);
         });
 
-        stateMachine[sCantMove.type].addTrans(sCanMove.type, () =>
+        mStateMachine[sCantMove.mtype].addTrans(sCanMove.mtype, () =>
         {
-            return CheckInsideGround(newPostion);
+            return CheckInsideGround(mNewPostion);
         });
 
-        EventManager.Player.OnHealthChanged.Get().AddListener(UpdateHealth);
+        EventManager.cPlayer.eOnHealthChanged.Get().AddListener(UpdateHealth);
     }
 
     // Update is called once per frame
     void Update()
     {
-        stateMachine.update();
-        health++;
-        EventManager.Player.OnHealthChanged.Get(Default).Invoke(this, health);
+        mStateMachine.update();
+        mHealth++;
+        EventManager.cPlayer.eOnHealthChanged.Get().Invoke(this, mHealth);
     }
 
+    //Is called when the event Listener is triggered
     private void UpdateHealth(Component component, int health)
     {
         Debug.Log("EVENT SYSTEM RECIEVED HEATLH " + health.ToString());
     }
 
 
-
+    //Checks if the players move to postion is inside the ground area
     public bool CheckInsideGround(Vector3 NewPos)
     {
-        Vector3 FloorCenterPos = Floor.transform.position;
-        Vector3 sphereWidth = Floor.transform.localScale;
+        Vector3 FloorCenterPos = mFloor.transform.position;
+        Vector3 sphereWidth = mFloor.transform.localScale;
 
         Vector3 center_to_player = NewPos - FloorCenterPos;
         if(center_to_player.magnitude > sphereWidth.z/2 - 1) return false; else return true;
@@ -59,15 +62,16 @@ public class PlayerMovScript : MonoBehaviour
 
     }
 
+    //Checks where the player wants to move based on input
     public void CheckNewPostion()
     {
         float moveX = Input.GetAxis("Horizontal");
         float moveY = Input.GetAxis("Vertical");
         Vector2 move = new Vector2(moveX, moveY);
 
-        newPostion = new Vector3(player.transform.position.x + move.x * moveSpeed * Time.deltaTime,
-                                      player.transform.position.y,
-                                      player.transform.position.z + move.y * moveSpeed * Time.deltaTime);
+        mNewPostion = new Vector3(mPlayer.transform.position.x + move.x * mMoveSpeed * Time.deltaTime,
+                                      mPlayer.transform.position.y,
+                                      mPlayer.transform.position.z + move.y * mMoveSpeed * Time.deltaTime);
     }
 }
 
@@ -75,7 +79,7 @@ public class PlayerMovScript : MonoBehaviour
 
 public class sCanMove: StateAuto<sCanMove, PlayerMovScript>
 {
-    public override bool IsDefault => true;
+    public override bool mIsDefault => true;
     public override void enter()
     {
         Debug.Log("Entered Can Move State");
@@ -83,8 +87,8 @@ public class sCanMove: StateAuto<sCanMove, PlayerMovScript>
 
     public override void update()
     {
-        script.CheckNewPostion();
-        script.player.transform.position = script.newPostion;
+        mScript.CheckNewPostion();
+        mScript.mPlayer.transform.position = mScript.mNewPostion;
     }
 
     public override void exit()
@@ -103,7 +107,7 @@ public class sCantMove : StateAuto<sCantMove, PlayerMovScript>
 
     public override void update()
     {
-        script.CheckNewPostion();
+        mScript.CheckNewPostion();
     }
 
     public override void exit()
