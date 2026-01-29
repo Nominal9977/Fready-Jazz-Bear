@@ -1071,13 +1071,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01bada750c5af3e45a32c810dd2cc348, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
-  player: {fileID: 1203822782}
-  Floor: {fileID: 529704910}
-  BossLastKnownPostion: {x: 0, y: 0, z: 0}
-  newPostion: {x: 0, y: 0, z: 0}
-  health: 0
-  stateMachine: {fileID: 2131067230}
+  mMoveSpeed: 5
+  mPlayer: {fileID: 1203822782}
+  mFloor: {fileID: 529704910}
+  mBossLastKnownPostion: {x: 0, y: 0, z: 0}
+  mNewPostion: {x: 0, y: 0, z: 0}
+  mHealth: 0
+  mStateMachine: {fileID: 2131067230}
 --- !u!114 &1203822789
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1090,16 +1090,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea13c679a61253e41b5a999248b0576d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bCombo: {fileID: 0}
+  bCombo: {fileID: 1203822790}
   score: 0
   totalScore: 0
   attackHitScoreIncrease: 1
   playerHitScoreDecrease: 1
   thresholds:
   - scoreNeeded: 25
-    thresholdTime: 10
+    thresholdTime: 120
   - scoreNeeded: 30
     thresholdTime: 15
+  scoreMaintainTime: 5
+  scoreBleedTime: 3
+  scoreBleedAmount: 1
   scoreTF: {fileID: 2074349444}
   totalTF: {fileID: 119067348}
   timerTF: {fileID: 1561880910}

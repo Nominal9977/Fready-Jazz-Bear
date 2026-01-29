@@ -38,7 +38,7 @@ public class BeatCombo : MonoBehaviour
                 shouldScoreDecay = false;
                 StartCoroutine(ComboDecayTimer());
             }
-            
+            pScore.UpdateScore(pScore.attackHitScoreIncrease);
         }
     }
 
@@ -64,7 +64,7 @@ public class BeatCombo : MonoBehaviour
     {
         curMultIndex = 0;
         comboTF.text = "x" + comboMults[curMultIndex].ToString();
-        Debug.Log("resetting combo");
+        //Debug.Log("resetting combo");
     }
 
     void IncreaseCombo()
@@ -80,11 +80,11 @@ public class BeatCombo : MonoBehaviour
     IEnumerator ComboDecayTimer()
     {
         shouldScoreDecay = true;
-        Debug.Log("Starting Decay Timer");
+        //Debug.Log("Starting Decay Timer");
         yield return new WaitForSeconds(comboDecayTime);
         if (shouldScoreDecay)
         {
-            Debug.Log("combo decayed");
+            //Debug.Log("combo decayed");
             ResetCombo();
         }
     }
