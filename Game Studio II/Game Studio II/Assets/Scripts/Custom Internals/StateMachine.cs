@@ -62,7 +62,7 @@ public class StateBase : MonoBehaviour
                 this.States[type] = stateInstance;
             }
         }
-        var defaultState = this.States.Values.FirstOrDefault(s => s.IsDefault) ?? this.States.Values.First();
+        var defaultState = this.States.Values.FirstOrDefault(s => s.mIsDefault) ?? this.States.Values.First();
         this.currentState = defaultState;
         this.currentState.enter();
     }
@@ -77,7 +77,7 @@ public class StateBase : MonoBehaviour
             }
         }
 
-        foreach (baseTransition tran in currentState.stateTrans)
+        foreach (baseTransition tran in currentState.mStateTrans)
         {
             if (tran.Evalutate)
             {
@@ -140,7 +140,7 @@ public class StateMachine : MachineAuto<StateMachine>
         }
 
         // 5. Pick the default state
-        var defaultState = stateMachine.States.Values.FirstOrDefault(s => s.IsDefault) ?? stateMachine.States.Values.First();
+        var defaultState = stateMachine.States.Values.FirstOrDefault(s => s.mIsDefault) ?? stateMachine.States.Values.First();
         stateMachine.currentState = defaultState;
         stateMachine.currentState.enter();
 
@@ -175,28 +175,28 @@ public interface sDefaultState
 }
 public class State : sDefaultState
 {
-    public virtual bool IsDefault => false;
-    public HashSet<baseTransition> stateTrans { get; } = new HashSet<baseTransition>();
+    public virtual bool mIsDefault => false;
+    public HashSet<baseTransition> mStateTrans { get; } = new HashSet<baseTransition>();
     virtual public void enter() { }
     virtual public void update() { }
     virtual public void exit() { }
     public void addTrans(Type to, Func<bool> condition)
     {
-        stateTrans.Add(new baseTransition(to, condition));
+        mStateTrans.Add(new baseTransition(to, condition));
     }
 }
 public abstract class StateAuto<T, S>: State where T : StateAuto<T, S>, new()
 {
-    public static Type type => typeof(T);
+    public static Type mtype => typeof(T);
 
-    public S script;
+    public S mScript;
 
-    public static T Auto => new T();
+    public static T mAuto => new T();
 
     static public T Script(S _script)
     {
         T instance = new T();
-        instance.script = _script;
+        instance.mScript = _script;
         return instance;
     }
 }

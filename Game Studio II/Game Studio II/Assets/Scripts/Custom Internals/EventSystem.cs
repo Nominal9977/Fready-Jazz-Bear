@@ -5,29 +5,29 @@ using static ChannelNames;
 
 public static class EventManager
 {
-    public static readonly playerEvents Player = new playerEvents();
-    public static readonly NetworkEvents Network = new NetworkEvents();
+    public static readonly playerEvents cPlayer = new playerEvents();
+    public static readonly NetworkEvents cNetwork = new NetworkEvents();
 
-    public static readonly DataRequestManager DataRequest = new DataRequestManager();
-    public static readonly DataResponseManager DataResponse = new DataResponseManager();
+    public static readonly DataRequestManager cDataRequest = new DataRequestManager();
+    public static readonly DataResponseManager cDataResponse = new DataResponseManager();
 
     public class playerEvents
     {
         public class HealthEvent : UnityEvent<Component, int> { }
-        public GenericEvent<HealthEvent> OnHealthChanged = new GenericEvent<HealthEvent>();
+        public GenericEvent<HealthEvent> eOnHealthChanged = new GenericEvent<HealthEvent>();
     }
 
 
     public class DataRequestManager
     {
         public class PostionRquestEvent : UnityEvent<Component, int> { }
-        public GenericEvent<PostionRquestEvent> OnPostionRequest = new GenericEvent<PostionRquestEvent>();
+        public GenericEvent<PostionRquestEvent> eOnPostionRequest = new GenericEvent<PostionRquestEvent>();
     }
 
     public class DataResponseManager
     {
         public class PostionResponseEvent : UnityEvent<Transform, Vector3> { }
-        public GenericEvent<PostionResponseEvent> OnPostionResponse = new GenericEvent<PostionResponseEvent>();
+        public GenericEvent<PostionResponseEvent> eOnPostionResponse = new GenericEvent<PostionResponseEvent>();
     }
 
 
@@ -42,19 +42,19 @@ public static class EventManager
 
 public class GenericEvent<T> where T : class, new()
 {
-    private Dictionary<ChannelNames, T> map = new Dictionary<ChannelNames, T>();
+    private Dictionary<ChannelNames, T> mMap = new Dictionary<ChannelNames, T>();
 
     public T this[ChannelNames channel]
     {
         get
         {
-            map.TryAdd(channel, new T());
-            return map[channel];
+            mMap.TryAdd(channel, new T());
+            return mMap[channel];
         }
     }
     public T Get(ChannelNames channel = Default)
     {
-        map.TryAdd(channel, new T());
-        return map[channel];
+        mMap.TryAdd(channel, new T());
+        return mMap[channel];
     }
 }
