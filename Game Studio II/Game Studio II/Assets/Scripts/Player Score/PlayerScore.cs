@@ -90,13 +90,7 @@ public class PlayerScore : MonoBehaviour
         UpdateScore((int)-scoreBleedAmount);
     }
 
-    public void ResetScoreBleed()
-    {
-        couldScoreBleed = false; // could timer
-        shouldScoreBleed = false;
-        scoreBleed = false;
-    }
-
+    #region UI & VALUE UPDATES
     public void UpdateTimer()
     {
         timerTF.text = time.ToString("00:00");
@@ -115,6 +109,9 @@ public class PlayerScore : MonoBehaviour
         Debug.Log("Updated score" + score.ToString());
         scoreTF.text = score.ToString();
     }
+    #endregion
+
+    #region SCORE CHECKS
 
     public bool CheckScore()
     {
@@ -157,6 +154,9 @@ public class PlayerScore : MonoBehaviour
             return false;
         }
     }
+    #endregion
+
+    #region THRESHOLD MANAGEMENT
 
     void ProgressThreshold()
     {
@@ -186,6 +186,10 @@ public class PlayerScore : MonoBehaviour
         curThresholdIndex = 0;
     }
 
+    #endregion
+
+    #region RESETTING
+
     void ResetScore()
     {
         score = 0;;
@@ -208,6 +212,10 @@ public class PlayerScore : MonoBehaviour
         ResetTime();
         
     }
+
+    #endregion
+
+    #region TIMERS
 
     IEnumerator ScoreBleedTimer()
     {
@@ -244,5 +252,6 @@ public class PlayerScore : MonoBehaviour
         CheckScorePhaseEnd();
     }
 
+    #endregion
 
 }
