@@ -1,36 +1,48 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Timeline;
+using UnityEngine.UIElements;
 using static ChannelNames;
 
 public static class EventManager
 {
     public static readonly playerEvents cPlayer = new playerEvents();
-    public static readonly NetworkEvents cNetwork = new NetworkEvents();
+    public static readonly BossEvents cBoss = new BossEvents();
 
-    public static readonly DataRequestManager cDataRequest = new DataRequestManager();
-    public static readonly DataResponseManager cDataResponse = new DataResponseManager();
+
+    //General Events so that each channels doesnt have things like heatlh and postion events repeatedly
+    public class UniveralUnityEvents
+    {
+        public class Postion : UnityEvent<Component, Vector3> { }
+        public class HealthEvent : UnityEvent<Component, int> { }
+    }
+
+    public class BossEvents
+    {
+        public GenericEvent<UniveralUnityEvents.Postion> ePostionChange = new GenericEvent<UniveralUnityEvents.Postion>();
+    }
+
+    public class CammeraEvents
+    {
+        public GenericEvent<UniveralUnityEvents.Postion> ePostionChange = new GenericEvent<UniveralUnityEvents.Postion>();
+    }
+
+    public class CroudEvents
+    {
+        // figure we want a channel no idea what should go here yet
+    }
 
     public class playerEvents
     {
-        public class HealthEvent : UnityEvent<Component, int> { }
-        public GenericEvent<HealthEvent> eOnHealthChanged = new GenericEvent<HealthEvent>();
+        public GenericEvent<UniveralUnityEvents.HealthEvent> eOnHealthChanged = new GenericEvent<UniveralUnityEvents.HealthEvent>();
+        public GenericEvent<UniveralUnityEvents.Postion> ePostionChange = new GenericEvent<UniveralUnityEvents.Postion>();
     }
 
-
-    public class DataRequestManager
+    public class ScoreEvents
     {
-        public class PostionRquestEvent : UnityEvent<Component, int> { }
-        public GenericEvent<PostionRquestEvent> eOnPostionRequest = new GenericEvent<PostionRquestEvent>();
+        // figure we want a channel no idea what should go here yet
     }
-
-    public class DataResponseManager
-    {
-        public class PostionResponseEvent : UnityEvent<Transform, Vector3> { }
-        public GenericEvent<PostionResponseEvent> eOnPostionResponse = new GenericEvent<PostionResponseEvent>();
-    }
-
-
 
     public class NetworkEvents
     {
