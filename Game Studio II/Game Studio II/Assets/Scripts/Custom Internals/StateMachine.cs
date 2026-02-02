@@ -88,7 +88,14 @@ public class StateBase : MonoBehaviour
         }
         return 0;
     }
-    public void changeState(Type newState)
+
+
+    public void TriggerTransition(Type toState)
+    {
+        changeState(toState);
+    }
+
+    private void changeState(Type newState)
     {
         currentState.exit();
         currentState = States[newState];

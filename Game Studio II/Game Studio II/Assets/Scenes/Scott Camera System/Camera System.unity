@@ -436,7 +436,7 @@ MonoBehaviour:
   mBossLastKnownPostion: {x: 0, y: 0, z: 0}
   mNewPostion: {x: 0, y: 0, z: 0}
   mHealth: 0
-  mStateMachine: {fileID: 1657422737}
+  mStateMachine: {fileID: 0}
 --- !u!54 &1179622682
 Rigidbody:
   m_ObjectHideFlags: 0
