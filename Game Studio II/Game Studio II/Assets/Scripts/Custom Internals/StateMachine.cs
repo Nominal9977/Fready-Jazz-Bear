@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Linq;
 using System.Reflection;
+using Unity.VisualScripting;
 
 
 public class StateBase : MonoBehaviour
@@ -100,6 +101,11 @@ public class StateBase : MonoBehaviour
         checkTrans();
     }
 
+    public void fixedUpdate()
+    { 
+        currentState.fixedUpdate();
+    }
+
 }
 public abstract class MachineAuto<T> : StateBase where T : StateBase, new()
 {
@@ -129,7 +135,7 @@ public class StateMachine : MachineAuto<StateMachine>
 
             if (rawInstance is State stateInstance)
             {
-                var scriptField = type.GetField("script");
+                var scriptField = type.GetField("mScript");
 
                 if (scriptField != null)
                 {
@@ -171,6 +177,7 @@ public interface sDefaultState
 {
     void enter();
     void update();
+    void fixedUpdate();
     void exit();
 }
 public class State : sDefaultState
@@ -179,6 +186,7 @@ public class State : sDefaultState
     public HashSet<baseTransition> mStateTrans { get; } = new HashSet<baseTransition>();
     virtual public void enter() { }
     virtual public void update() { }
+    public virtual void fixedUpdate() { }
     virtual public void exit() { }
     public void addTrans(Type to, Func<bool> condition)
     {
