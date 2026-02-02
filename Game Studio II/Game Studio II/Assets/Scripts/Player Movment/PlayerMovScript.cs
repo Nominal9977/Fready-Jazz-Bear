@@ -45,7 +45,7 @@ public class PlayerMovScript : MonoBehaviour
     //Is called when the event Listener is triggered
     private void UpdateHealth(Component component, int health)
     {
-        Debug.Log("EVENT SYSTEM RECIEVED HEATLH " + health.ToString());
+        //Debug.Log("EVENT SYSTEM RECIEVED HEATLH " + health.ToString());
     }
 
 
