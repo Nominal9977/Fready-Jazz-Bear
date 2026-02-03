@@ -19,16 +19,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
           lfs: true
 
+      # Cache Unity Library (speeds up future builds)
       - name: Cache Library
         uses: actions/cache@v4
         with:
-          path: sp26-egd320-s104-t01-git/Game Studio II/Game Studio II/Library
-          key: Library-${{ runner.os }}-${{ hashFiles('sp26-egd320-s104-t01-git/Game Studio II/Game Studio II/Packages/manifest.json', 'sp26-egd320-s104-t01-git/Game Studio II/Game Studio II/ProjectSettings/ProjectVersion.txt') }}
+          path: "Game Studio II/Game Studio II/Library"
+          key: Library-${{ runner.os }}-${{ hashFiles('Game Studio II/Game Studio II/Packages/manifest.json', 'Game Studio II/Game Studio II/ProjectSettings/ProjectVersion.txt') }}
           restore-keys: |
             Library-${{ runner.os }}-
 
@@ -39,13 +40,13 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
-          projectPath: sp26-egd320-s104-t01-git/Game Studio II/Game Studio II
+          projectPath: "Game Studio II/Game Studio II"
           targetPlatform: WebGL
 
-      - name: Upload WebGL build
+      - name: Upload WebGL build to Pages
         uses: actions/upload-pages-artifact@v3
         with:
-          path: sp26-egd320-s104-t01-git/Game Studio II/Game Studio II/build/WebGL/WebGL
+          path: "Game Studio II/Game Studio II/build/WebGL/WebGL"
 
   deploy:
     needs: build
@@ -53,5 +54,5 @@ jobs:
     environment:
       name: github-pages
     steps:
-      - name: Deploy to Pages
+      - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
