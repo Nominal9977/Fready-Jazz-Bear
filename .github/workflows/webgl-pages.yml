@@ -1,8 +1,8 @@
-name: Build & Deploy Unity WebGL
+name: Build & Deploy Unity WebGL (GitHub Pages)
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
   workflow_dispatch:
 
 permissions:
@@ -18,8 +18,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    # IMPORTANT: set your Unity secrets here so game-ci can pick them up
     env:
+      # Some Unity jobs in containers can be picky about HOME
       HOME: ${{ github.workspace }}/.home
+      UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+      UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+      UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
 
     steps:
       - name: Checkout
@@ -28,6 +33,7 @@ jobs:
           lfs: true
 
       - name: Create HOME directory
+        shell: bash
         run: mkdir -p "$HOME"
 
       - name: Configure Pages
@@ -41,13 +47,9 @@ jobs:
           restore-keys: |
             Library-${{ runner.os }}-
 
-      # 🔎 SAFE SECRET CHECK
+      # Safe sanity check (does NOT print your secrets, just whether they're present)
       - name: Check Unity secrets (safe)
         shell: bash
-        env:
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         run: |
           echo "EMAIL set?      $([ -n "$UNITY_EMAIL" ] && echo yes || echo no)"
           echo "PASSWORD set?   $([ -n "$UNITY_PASSWORD" ] && echo yes || echo no)"
@@ -56,20 +58,44 @@ jobs:
 
       - name: Build Unity WebGL
         uses: game-ci/unity-builder@v4
-        env:
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
           projectPath: "Game Studio II/Game Studio II"
           targetPlatform: WebGL
           buildName: WebGL
           buildsPath: "Game Studio II/Game Studio II/build"
 
+      # If the build fails, dump the Editor.log so you can see the exact CS error + file + line number
+      - name: Print Unity Editor log on failure
+        if: failure()
+        shell: bash
+        run: |
+          echo "=== Searching for Unity Editor.log ==="
+          find "$HOME" -maxdepth 8 -type f -name "Editor.log" -print || true
+          echo "=== Tail Unity Editor.log (if present) ==="
+          LOG="$HOME/.config/unity3d/Editor.log"
+          if [ -f "$LOG" ]; then
+            echo "--- $LOG ---"
+            tail -n 250 "$LOG"
+          else
+            echo "Editor.log not found at $LOG"
+          fi
+
+      # Always upload logs so you can download them even if the output is truncated
+      - name: Upload Unity logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unity-logs
+          path: |
+            ${{ github.workspace }}/**/*.log
+            ${{ github.workspace }}/.home/.config/unity3d/Editor.log
+          if-no-files-found: ignore
+
+      # Upload the WebGL build folder Unity created
       - name: Upload WebGL to Pages
         uses: actions/upload-pages-artifact@v3
         with:
-          path: Game Studio II/Game Studio II/build/WebGL
+          path: "Game Studio II/Game Studio II/build/WebGL"
 
   deploy:
     needs: build
