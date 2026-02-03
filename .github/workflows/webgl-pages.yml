@@ -18,60 +18,55 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      # Fixes "Home directory not accessible" issue
+      HOME: ${{ github.workspace }}/.home
+      UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           lfs: true
 
-      # Required for GitHub Pages (sets env + permissions context)
+      - name: Create HOME directory
+        run: mkdir -p "$HOME"
+
+      # Needed for GitHub Pages deployment
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
-      # Cache Unity Library (speeds up future builds)
-      - name: Cache Library
+      # Speeds up builds by caching Unity Library
+      - name: Cache Unity Library
         uses: actions/cache@v4
         with:
-          path: "Game Studio II/Game Studio II/Library"
+          path: Game Studio II/Game Studio II/Library
           key: Library-${{ runner.os }}-${{ hashFiles('Game Studio II/Game Studio II/Packages/manifest.json', 'Game Studio II/Game Studio II/ProjectSettings/ProjectVersion.txt') }}
           restore-keys: |
             Library-${{ runner.os }}-
 
-      # Safe debug: confirms secrets are being passed (prints only lengths)
-      - name: Debug - secret lengths
-        run: |
-          echo "EMAIL len=${#UNITY_EMAIL}"
-          echo "PASS  len=${#UNITY_PASSWORD}"
-          echo "LIC   len=${#UNITY_LICENSE}"
-        env:
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-
       - name: Build Unity WebGL
         uses: game-ci/unity-builder@v4
-        env:
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
           projectPath: "Game Studio II/Game Studio II"
           targetPlatform: WebGL
+          buildName: WebGL
           buildsPath: "Game Studio II/Game Studio II/build"
-          buildName: "WebGL"
 
-      - name: Upload WebGL build to Pages
+      # Upload the WebGL folder Unity just created
+      - name: Upload WebGL to Pages
         uses: actions/upload-pages-artifact@v3
         with:
-          # IMPORTANT: this should be the WebGL build folder that contains index.html
-          path: "Game Studio II/Game Studio II/build/WebGL"
+          path: Game Studio II/Game Studio II/build/WebGL
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
     environment:
       name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - name: Deploy to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v4
