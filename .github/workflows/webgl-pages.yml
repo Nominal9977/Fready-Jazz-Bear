@@ -24,6 +24,10 @@ jobs:
         with:
           lfs: true
 
+      # Required for GitHub Pages (sets env + permissions context)
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
       # Cache Unity Library (speeds up future builds)
       - name: Cache Library
         uses: actions/cache@v4
@@ -53,17 +57,21 @@ jobs:
         with:
           projectPath: "Game Studio II/Game Studio II"
           targetPlatform: WebGL
+          buildsPath: "Game Studio II/Game Studio II/build"
+          buildName: "WebGL"
 
       - name: Upload WebGL build to Pages
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "Game Studio II/Game Studio II/build/WebGL/WebGL"
+          # IMPORTANT: this should be the WebGL build folder that contains index.html
+          path: "Game Studio II/Game Studio II/build/WebGL"
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
     environment:
       name: github-pages
+
     steps:
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
