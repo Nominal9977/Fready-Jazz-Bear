@@ -27,8 +27,10 @@ jobs:
       - name: Cache Library
         uses: actions/cache@v4
         with:
-          path: Library
-          key: Library-${{ runner.os }}-${{ hashFiles('**/Packages/manifest.json', '**/ProjectSettings/ProjectVersion.txt') }}
+          path: sp26-egd320-s104-t01-git/Game Studio II/Game Studio II/Library
+          key: Library-${{ runner.os }}-${{ hashFiles('sp26-egd320-s104-t01-git/Game Studio II/Game Studio II/Packages/manifest.json', 'sp26-egd320-s104-t01-git/Game Studio II/Game Studio II/ProjectSettings/ProjectVersion.txt') }}
+          restore-keys: |
+            Library-${{ runner.os }}-
 
       - name: Build Unity WebGL
         uses: game-ci/unity-builder@v4
@@ -37,12 +39,13 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
+          projectPath: sp26-egd320-s104-t01-git/Game Studio II/Game Studio II
           targetPlatform: WebGL
 
       - name: Upload WebGL build
         uses: actions/upload-pages-artifact@v3
         with:
-          path: build/WebGL/WebGL
+          path: sp26-egd320-s104-t01-git/Game Studio II/Game Studio II/build/WebGL/WebGL
 
   deploy:
     needs: build
