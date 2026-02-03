@@ -33,6 +33,17 @@ jobs:
           restore-keys: |
             Library-${{ runner.os }}-
 
+      # Safe debug: confirms secrets are being passed (prints only lengths)
+      - name: Debug - secret lengths
+        run: |
+          echo "EMAIL len=${#UNITY_EMAIL}"
+          echo "PASS  len=${#UNITY_PASSWORD}"
+          echo "LIC   len=${#UNITY_LICENSE}"
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+
       - name: Build Unity WebGL
         uses: game-ci/unity-builder@v4
         env:
