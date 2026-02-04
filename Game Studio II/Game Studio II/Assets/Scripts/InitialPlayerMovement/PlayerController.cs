@@ -52,13 +52,10 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        // Fetch Components 
         FetchComponents();
 
-        // Create Own Instance Of StateMachine?? (Check When Making Seperate StateMachine User In Scene)
-        mStateMachine = mStateMachine.StartStateWithAuto(this);
+        mStateMachine.StartStateWithAuto(this);
 
-        // Setup Transitions
         SetupTransitions();
     }
 
@@ -327,7 +324,7 @@ public class PlayerController : MonoBehaviour
         // Find The State Machine In Scene If Not Set Already
         if (mStateMachine == null)
         {
-            mStateMachine = FindFirstObjectByType<StateMachine>();
+            mStateMachine = GetComponent<StateMachine>();
         }
     }
     #endregion

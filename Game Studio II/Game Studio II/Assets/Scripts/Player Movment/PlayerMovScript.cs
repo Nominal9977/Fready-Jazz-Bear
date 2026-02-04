@@ -19,7 +19,9 @@ public class PlayerMovScript : MonoBehaviour
     void Start()
     {
         mPlayer = this.gameObject;
-        mStateMachine = mStateMachine.StartStateWithAuto(this);
+        mStateMachine = GetComponent<StateMachine>();
+        mStateMachine.StartStateWithAuto(this);
+
 
         mStateMachine[sCanMove.mtype].addTrans(sCantMove.mtype, () => 
         { 

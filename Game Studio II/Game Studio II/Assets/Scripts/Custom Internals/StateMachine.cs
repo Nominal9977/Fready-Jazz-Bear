@@ -116,25 +116,25 @@ public class StateBase : MonoBehaviour
 }
 public abstract class MachineAuto<T> : StateBase where T : StateBase, new()
 {
-    public static T Auto => new T();
+    
 }
 public class StateMachine : MachineAuto<StateMachine>
 {
-    //sets the first state in the list as the defualt pram
-    public StateMachine StartStateWithAuto<TScript>(TScript scriptInstance)
+    public void StartStateWithAuto<TScript>(TScript scriptInstance)
     {
         Type baseGeneric = typeof(StateAuto<,>);
 
         var types = Assembly.GetAssembly(baseGeneric)
-                             .GetTypes()
-                             .Where(type => type.BaseType != null
-                                 && type.BaseType.IsGenericType
-                                 && type.BaseType.GetGenericTypeDefinition() == baseGeneric
-                                 && type.BaseType.GenericTypeArguments[1] == typeof(TScript)
-                                 && !type.IsAbstract)
-                             .ToList();
+            .GetTypes()
+            .Where(type => type.BaseType != null
+                && type.BaseType.IsGenericType
+                && type.BaseType.GetGenericTypeDefinition() == baseGeneric
+                && type.BaseType.GenericTypeArguments[1] == typeof(TScript)
+                && !type.IsAbstract)
+            .ToList();
 
-        var stateMachine = Auto;
+        States.Clear();
+        GlobalTransitons.Clear();
 
         foreach (var type in types)
         {
@@ -143,24 +143,17 @@ public class StateMachine : MachineAuto<StateMachine>
             if (rawInstance is State stateInstance)
             {
                 var scriptField = type.GetField("mScript");
-
                 if (scriptField != null)
-                {
                     scriptField.SetValue(stateInstance, scriptInstance);
-                }
-                stateMachine.States[type] = stateInstance;
+
+                States[type] = stateInstance;
             }
         }
 
-        // 5. Pick the default state
-        var defaultState = stateMachine.States.Values.FirstOrDefault(s => s.mIsDefault) ?? stateMachine.States.Values.First();
-        stateMachine.currentState = defaultState;
-        stateMachine.currentState.enter();
-
-        return stateMachine;
+        var defaultState = States.Values.FirstOrDefault(s => s.mIsDefault) ?? States.Values.First();
+        currentState = defaultState;
+        currentState.enter();
     }
-
-
 }
 
 
