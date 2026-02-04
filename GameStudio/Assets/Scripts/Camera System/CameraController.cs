@@ -71,15 +71,15 @@ public class CameraController : MonoBehaviour
 
     #region States
 
-    public class sCameraIdleState : StateAuto<sCameraIdleState, CameraController>
-    {
-        public override bool mIsDefault => true;
-        
-    }
-
     public class sMoveToNewPostion : StateAuto<sMoveToNewPostion, CameraController>
     {
+        public override bool mIsDefault => true;
 
+
+        public override void update()
+        {
+            
+        }
     }
     #endregion
 

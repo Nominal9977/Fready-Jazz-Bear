@@ -976,7 +976,7 @@ MonoBehaviour:
   mTiltSpeed: 5
   mRigidBody: {fileID: 0}
   mCapsule: {fileID: 2002361016}
-  mStateMachine: {fileID: 0}
+  mStateMachine: {fileID: 2131067230}
   mStateText: {fileID: 1539633652}
   mGroundedText: {fileID: 867431679}
 --- !u!1 &1539633650
