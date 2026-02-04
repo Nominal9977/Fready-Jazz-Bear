@@ -60,13 +60,23 @@ public class GenericEvent<T> where T : class, new()
     {
         get
         {
-            mMap.TryAdd(channel, new T());
-            return mMap[channel];
+            if (!mMap.TryGetValue(channel, out var value))
+            {
+                value = new T();
+                mMap[channel] = value;
+            }
+            return value;
         }
     }
+
     public T Get(ChannelNames channel = Default)
     {
-        mMap.TryAdd(channel, new T());
-        return mMap[channel];
+        if (!mMap.TryGetValue(channel, out var value))
+        {
+            value = new T();
+            mMap[channel] = value;
+        }
+        return value;
     }
+
 }

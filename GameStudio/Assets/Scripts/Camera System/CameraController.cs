@@ -8,6 +8,13 @@ public class CameraController : MonoBehaviour
     [SerializeField] public Camera mCamera;
     [SerializeField] public StateMachine mStateMachine;
 
+
+    [HideInInspector] public Vector3 mCurrentPostion
+    {
+        get { return mCamera.transform.position; }
+        set { mCamera.transform.position = value; }
+    }
+
     [HideInInspector] public Vector3 mPlayerpostion;
     [HideInInspector] public Vector3 mBosspostion;
 
