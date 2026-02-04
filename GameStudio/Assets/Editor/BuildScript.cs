@@ -7,12 +7,21 @@ public class BuildScript
     [MenuItem("Build/WebGL")]
     public static void BuildWebGL()
     {
-        string[] scenes = { "Assets/Scenes/MainGame.unity", "Assets/Scenes/MainMenu.unity", "Assets/Scenes/InitialPlayerMovement.unity" };
+        string[] scenes = EditorBuildSettings.scenes
+            .Where(s => s.enabled)
+            .Select(s => s.path)
+            .ToArray();
+
         string buildPath = Path.Combine(Application.dataPath, "../build/WebGL");
 
-        BuildPipeline.BuildPlayer(scenes,
-            buildPath,
-            BuildTarget.WebGL,
-            BuildOptions.None);
+        BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions
+        {
+            scenes = scenes,
+            locationPathName = buildPath,
+            target = BuildTarget.WebGL,
+            options = BuildOptions.None
+        };
+
+        BuildPipeline.BuildPlayer(buildPlayerOptions);
     }
 }

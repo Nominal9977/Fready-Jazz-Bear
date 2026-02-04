@@ -13,8 +13,6 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: 
-      image: unityci/editor:ubuntu-6000.0.41f1-webgl-3
     env:
       UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
       UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
@@ -37,12 +35,15 @@ jobs:
             Library-${{ runner.os }}-
 
       - name: Build Unity WebGL
-        env:
-          UNITY_USERNAME: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-        run: |
-          unity-editor -quit -batchmode -projectPath GameStudio -executeMethod BuildScript.BuildWebGL
-        # Note: You'll need to create a BuildScript.cs in your project's Editor folder
+        uses: game-ci/unity-builder@v4
+        with:
+          projectPath: GameStudio
+          unityVersion: 6000.0.41f1
+          targetPlatform: WebGL
+          buildName: WebGL
+          buildsPath: GameStudio/build
+          # Add a custom build method if you have a specific build script
+          # buildMethod: BuildScript.BuildWebGL
 
       - name: Upload Build Logs
         if: always()
