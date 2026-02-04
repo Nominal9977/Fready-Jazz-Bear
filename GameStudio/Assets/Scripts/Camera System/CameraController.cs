@@ -15,6 +15,8 @@ public class CameraController : MonoBehaviour
         set { mCamera.transform.position = value; }
     }
 
+    [HideInInspector] public Vector3 mTargetPostion;
+
     [HideInInspector] public Vector3 mPlayerpostion;
     [HideInInspector] public Vector3 mBosspostion;
 
