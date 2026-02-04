@@ -40,8 +40,8 @@ jobs:
       - name: Cache Unity Library
         uses: actions/cache@v4
         with:
-          path: sp26-egd320-s104-t01-git/GameStudio/Library
-          key: Library-${{ runner.os }}-${{ hashFiles('sp26-egd320-s104-t01-git/GameStudio/Packages/manifest.json', 'sp26-egd320-s104-t01-git/GameStudio/ProjectSettings/ProjectVersion.txt') }}
+          path: GameStudio/Library
+          key: Library-${{ runner.os }}-${{ hashFiles('GameStudio/Packages/manifest.json', 'GameStudio/ProjectSettings/ProjectVersion.txt') }}
           restore-keys: |
             Library-${{ runner.os }}-
 
@@ -56,10 +56,10 @@ jobs:
       - name: Build Unity WebGL
         uses: game-ci/unity-builder@v4
         with:
-          projectPath: "sp26-egd320-s104-t01-git/GameStudio"
+          projectPath: "GameStudio"
           targetPlatform: WebGL
           buildName: WebGL
-          buildsPath: "sp26-egd320-s104-t01-git/GameStudio/build"
+          buildsPath: "GameStudio/build"
 
       - name: Print Unity Editor log on failure
         if: failure()
@@ -89,7 +89,7 @@ jobs:
       - name: Upload WebGL to Pages
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "sp26-egd320-s104-t01-git/GameStudio/build/WebGL"
+          path: "GameStudio/build/WebGL"
 
   deploy:
     needs: build
