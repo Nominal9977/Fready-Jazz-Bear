@@ -1,71 +1,73 @@
-name: Build & Deploy Unity WebGL (GitHub Pages)
-on:
-  push:
-    branches: [ "main" ]
-  workflow_dispatch:
+name: Build Unity project
+on: [push, pull_request]
 permissions:
-  contents: read
-  pages: write
-  id-token: write
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
+  contents: write
 jobs:
-  build:
+  BuildForWebGL:
     runs-on: ubuntu-latest
-    env:
-      UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-      UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-      UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           lfs: true
-
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
-
-      - name: Cache Unity Library
+          fetch-depth: 0
+      
+      - name: Verify Unity Secrets
+        run: |
+          echo "Checking Unity Secrets..."
+          if [ -z "${{ secrets.UNITY_LICENSE }}" ]; then
+            echo "ERROR: UNITY_LICENSE is not set!"
+            exit 1
+          fi
+          if [ -z "${{ secrets.UNITY_EMAIL }}" ]; then
+            echo "ERROR: UNITY_EMAIL is not set!"
+            exit 1
+          fi
+          if [ -z "${{ secrets.UNITY_PASSWORD }}" ]; then
+            echo "ERROR: UNITY_PASSWORD is not set!"
+            exit 1
+          fi
+          echo "All Unity secrets are present ✓"
+        
+      - name: Cache Library
         uses: actions/cache@v4
         with:
-          path: GameStudio/Library
-          key: Library-${{ runner.os }}-${{ hashFiles('GameStudio/Packages/manifest.json', 'GameStudio/ProjectSettings/ProjectVersion.txt') }}
+          path: Library
+          key: Library-${{ hashFiles('Assets/**', 'ProjectSettings/**', 'Packages/**') }}
           restore-keys: |
-            Library-${{ runner.os }}-
-
-      - name: Build Unity WebGL
+            Library-
+      
+      - name: Build Project
         uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
-          projectPath: GameStudio
-          unityVersion: 6000.0.41f1
           targetPlatform: WebGL
-          buildName: WebGL
-          buildsPath: GameStudio/build
-          # Add a custom build method if you have a specific build script
-          # buildMethod: BuildScript.BuildWebGL
-
-      - name: Upload Build Logs
-        if: always()
+          buildMethod: AutomatedBuild.BuildWeb
+          unityVersion: 6000.0.66f1
+          versioning: Semantic
+          buildsPath: builds
+      
+      - name: Verify Build Output
+        run: |
+          echo "Checking build artifacts..."
+          if [ ! -d "builds/WebGL" ]; then
+            echo "ERROR: WebGL build directory not found!"
+            exit 1
+          fi
+          echo "Build directory exists ✓"
+          ls -la builds/WebGL
+      
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: unity-build-logs
-          path: |
-            GameStudio/Logs/*.log
-            ${{ github.workspace }}/*.log
-
-      - name: Upload WebGL to Pages
-        uses: actions/upload-pages-artifact@v3
+          name: WebGL-Build
+          path: builds/WebGL
+      
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          path: "GameStudio/build/WebGL"
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          branch: gh-pages
+          folder: builds/WebGL
